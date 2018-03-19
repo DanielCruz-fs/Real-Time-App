@@ -15,5 +15,7 @@ import AppFooter from './AppFooter'
  }
 </script>
 <style>
-	
+	 a{
+	 	 text-decoration: none;
+	 }
 </style>	

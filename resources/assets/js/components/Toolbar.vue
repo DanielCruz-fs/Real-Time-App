@@ -10,15 +10,11 @@
             <v-toolbar-title class="body-2 black--text"><h2>Nerdy</h2></v-toolbar-title>
             <v-spacer></v-spacer>
             <div class="hidden-sm-and-down">
-            <router-link to="/forum">
-               <v-btn flat>Blog</v-btn>  
+
+            <router-link v-for="item in items" :key="item.title" :to="item.to" v-if="item.show">
+               <v-btn flat>{{item.title}}</v-btn>  
             </router-link>
-            
-            <v-btn flat>Preguntas</v-btn>
-            <v-btn flat>Categorias</v-btn>
-            <router-link to="/login">
-               <v-btn flat>Login</v-btn>
-            </router-link>
+           
             </div>
           </v-toolbar>
         </v-card>
@@ -28,6 +24,22 @@
 </template>
 <script>
  export default{
+   data(){
+     return{
+       items:[
+         {title:'Blog', to:'/forum', show:true},
+         {title:'Login', to:'/login', show:!User.loggedIn()},
+         {title:'Preguntas', to:'/ask', show:User.loggedIn()},
+         {title:'Categorias', to:'/category', show:User.loggedIn()},
+         {title:'Logout', to:'/logout', show:User.loggedIn()}
+       ]
+     }
+   },
+   created(){
+     EventBus.$on('logout', () => {
+       User.logout();
+     });
+   }
 
  }  
 </script>

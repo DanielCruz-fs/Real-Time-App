@@ -18,8 +18,12 @@
                   <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" v-model="form.password"></v-text-field>
 
                   <v-card-actions>
+                  <router-link to="/signup">
+                     <v-btn color="indigo darken-1" class="body-2 white--text" type="submit">Registrate</v-btn>  
+                  </router-link>
+                  
                   <v-spacer></v-spacer>
-                  <v-btn color="indigo darken-2" class="body-2 white--text" type="submit">Login</v-btn>
+                  <v-btn color="indigo darken-1" class="body-2 white--text" type="submit">Login</v-btn>
                   </v-card-actions>
 
                 </v-form>
@@ -43,9 +47,15 @@
        }
      }
    },
+   created(){
+     if(User.loggedIn()){
+       this.$router.push({name: 'forum'});
+     }
+   },
    methods:{
      login(){
          User.login(this.form);
+         // this.$router.push({name: 'forum'});
      }
    }
  }	
