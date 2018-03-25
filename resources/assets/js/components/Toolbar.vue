@@ -29,7 +29,7 @@
        items:[
          {title:'Blog', to:'/forum', show:true},
          {title:'Login', to:'/login', show:!User.loggedIn()},
-         {title:'Preguntas', to:'/ask', show:User.loggedIn()},
+         {title:'Postear', to:'/ask', show:User.loggedIn()},
          {title:'Categorias', to:'/category', show:User.loggedIn()},
          {title:'Logout', to:'/logout', show:User.loggedIn()}
        ]
