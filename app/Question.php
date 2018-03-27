@@ -21,7 +21,7 @@ class Question extends Model
      }
 
      public function replies(){
-     	 return $this->hasMany('App\Reply');
+     	 return $this->hasMany('App\Reply')->latest();
      }
 
      public function getPathAttribute(){

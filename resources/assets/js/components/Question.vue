@@ -1,5 +1,5 @@
 <template>
-	 <v-card>
+	 <v-card class="mt-2">
         <v-list subheader>
           <v-subheader>{{data.user}} {{data.created_at}}</v-subheader>
           <v-list-tile avatar class="avatar-question">

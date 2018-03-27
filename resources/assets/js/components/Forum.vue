@@ -5,15 +5,16 @@
 	 	 	 	 <question v-for="question in questions" :key="question.path" :data=question></question>
 	 	 	 </v-flex>
 	 	 	 <v-flex xs12 sm4 md4 lg4>
-	 	 	 	blog
+	 	 	 	 <app-sidebar></app-sidebar>
 	 	 	 </v-flex>
 	 	 </v-layout>
 	 </v-container>
 </template>
 <script>
  import question from './Question'
+ import AppSidebar from './AppSidebar'
  export default{
- 	 components:{question},
+ 	 components:{question, AppSidebar},
  	 data(){
  	 	 return{
  	 	 	 questions:{}

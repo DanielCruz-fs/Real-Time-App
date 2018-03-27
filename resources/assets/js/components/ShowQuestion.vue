@@ -12,7 +12,7 @@
           <p>{{data.user}} {{data.created_at}}</p>
 
           <v-chip>
-            <v-avatar class="pink white--text">10</v-avatar>
+            <v-avatar class="pink white--text">{{data.reply_count}}</v-avatar>
             <span class="subheading">RESPUESTAS</span>
           </v-chip>
 
