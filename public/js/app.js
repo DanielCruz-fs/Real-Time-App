@@ -25257,7 +25257,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuetify__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuetify__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Helpers_User__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Router_router_js__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Helpers_Exception__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Router_router_js__ = __webpack_require__(69);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -25276,6 +25277,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuet
 
 window.User = __WEBPACK_IMPORTED_MODULE_2__Helpers_User__["a" /* default */];
 
+
+window.Exception = __WEBPACK_IMPORTED_MODULE_3__Helpers_Exception__["a" /* default */];
 // console.log(User.loggedIn());
 
 window.EventBus = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a();
@@ -25290,7 +25293,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('AppHome', __webpack_requi
 
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
   el: '#app',
-  router: __WEBPACK_IMPORTED_MODULE_3__Router_router_js__["a" /* default */]
+  router: __WEBPACK_IMPORTED_MODULE_4__Router_router_js__["a" /* default */]
 });
 
 /***/ }),
@@ -75298,7 +75301,7 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -75317,6 +75320,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__reply_Replies___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__reply_Replies__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reply_NewReply__ = __webpack_require__(135);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__reply_NewReply___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__reply_NewReply__);
+//
 //
 //
 //
@@ -75357,6 +75361,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		});
 	},
 
+	computed: {
+		loggedIn: function loggedIn() {
+			return User.loggedIn();
+		}
+	},
 	methods: {
 		listen: function listen() {
 			var _this2 = this;
@@ -75506,33 +75515,53 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-   props: ['data'],
-   data: function data() {
-      return {
-         // own: User.own(this.data.user_id),
-         gradient: 'to top right, rgba(63,81,181, .7), rgba(25,32,72, .7)'
-      };
-   },
+  props: ['data'],
+  data: function data() {
+    return {
+      // own: User.own(this.data.user_id),
+      gradient: 'to top right, rgba(63,81,181, .7), rgba(25,32,72, .7)',
+      replyCount: this.data.reply_count
+    };
+  },
+  created: function created() {
+    var _this = this;
 
-   computed: {
-      owner: function owner() {
-         return User.own(this.data.user_id);
-      }
-   },
-   methods: {
-      destroy: function destroy() {
-         var _this = this;
+    EventBus.$on('newReply', function () {
+      _this.replyCount++;
+    });
 
-         axios.delete('/api/question/' + this.data.slug).then(function (res) {
-            return _this.$router.push('/forum');
-         }).catch(function (error) {
-            return console.log(error.response.data);
-         });
-      },
-      edit: function edit() {
-         EventBus.$emit('starEditing');
-      }
-   }
+    EventBus.$on('deleteReply', function () {
+      _this.replyCount--;
+    });
+
+    Echo.private('App.User.' + User.id()).notification(function (notification) {
+      _this.replyCount++;
+    });
+
+    Echo.channel('deleteReplyChannel').listen('DeleteReplyEvent', function (e) {
+      _this.replyCount--;
+    });
+  },
+
+  computed: {
+    owner: function owner() {
+      return User.own(this.data.user_id);
+    }
+  },
+  methods: {
+    destroy: function destroy() {
+      var _this2 = this;
+
+      axios.delete('/api/question/' + this.data.slug).then(function (res) {
+        return _this2.$router.push('/forum');
+      }).catch(function (error) {
+        return console.log(error.response.data);
+      });
+    },
+    edit: function edit() {
+      EventBus.$emit('starEditing');
+    }
+  }
 });
 
 /***/ }),
@@ -75582,7 +75611,7 @@ var render = function() {
                     "v-chip",
                     [
                       _c("v-avatar", { staticClass: "pink white--text" }, [
-                        _vm._v(_vm._s(_vm.data.reply_count))
+                        _vm._v(_vm._s(_vm.replyCount))
                       ]),
                       _vm._v(" "),
                       _c("span", { staticClass: "subheading" }, [
@@ -76971,7 +77000,11 @@ var render = function() {
           _vm._v(" "),
           _c("replies", { attrs: { question: _vm.question } }),
           _vm._v(" "),
-          _c("new-reply", { attrs: { questionSlug: _vm.question.slug } })
+          _vm.loggedIn
+            ? _c("new-reply", { attrs: { questionSlug: _vm.question.slug } })
+            : _c("router-link", { attrs: { to: "/login" } }, [
+                _vm._v("Login para responder =)")
+              ])
         ],
         1
       )
@@ -77701,6 +77734,46 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 152 */,
+/* 153 */,
+/* 154 */,
+/* 155 */,
+/* 156 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__User__ = __webpack_require__(45);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+var Exception = function () {
+	function Exception() {
+		_classCallCheck(this, Exception);
+	}
+
+	_createClass(Exception, [{
+		key: 'handle',
+		value: function handle(error) {
+			this.isExpired(error.response.data.error);
+		}
+	}, {
+		key: 'isExpired',
+		value: function isExpired(error) {
+			if (error == 'Token is invalid') {
+				__WEBPACK_IMPORTED_MODULE_0__User__["a" /* default */].logout();
+			}
+		}
+	}]);
+
+	return Exception;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Exception = new Exception());
 
 /***/ })
 /******/ ]);

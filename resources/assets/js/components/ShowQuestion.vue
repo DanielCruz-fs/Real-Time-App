@@ -12,7 +12,7 @@
           <p>{{data.user}} {{data.created_at}}</p>
 
           <v-chip>
-            <v-avatar class="pink white--text">{{data.reply_count}}</v-avatar>
+            <v-avatar class="pink white--text">{{replyCount}}</v-avatar>
             <span class="subheading">RESPUESTAS</span>
           </v-chip>
 
@@ -40,7 +40,26 @@
  	 	return{
      	 // own: User.own(this.data.user_id),
      	 gradient: 'to top right, rgba(63,81,181, .7), rgba(25,32,72, .7)',
+       replyCount: this.data.reply_count
      	 }
+     },
+     created(){
+         EventBus.$on('newReply', () => {
+           this.replyCount++;
+         });
+
+         EventBus.$on('deleteReply', () => {
+           this.replyCount--;
+         });
+
+         Echo.private('App.User.' + User.id())
+           .notification((notification) => {
+             this.replyCount++;
+         });
+
+          Echo.channel('deleteReplyChannel').listen('DeleteReplyEvent', (e) => {
+             this.replyCount--;
+         })
      },
      computed:{
      	 owner(){

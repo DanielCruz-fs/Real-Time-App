@@ -9,7 +9,8 @@
 	 	
 	 <replies :question=question></replies>
 
-	 <new-reply :questionSlug=question.slug></new-reply>	
+	 <new-reply v-if="loggedIn" :questionSlug=question.slug></new-reply>
+	 <router-link v-else to="/login">Login para responder =)</router-link>	
 	 </div>
 	 
 </template>
@@ -31,6 +32,11 @@
  	 	 this.listen();
  	 	 axios.get('/api/question/' + this.$route.params.slug).then(res => this.question = res.data.data)
  	 	 .catch(error => console.log(error.response.data));
+ 	 },
+ 	 computed:{
+ 		 loggedIn(){
+ 		 	 return User.loggedIn();
+ 		 }
  	 },
  	 methods:{
  	 	 listen(){
