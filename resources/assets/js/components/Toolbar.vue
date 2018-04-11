@@ -7,7 +7,9 @@
       <v-flex xs8 offset-xs2>
         <v-card class="card--flex-toolbar elevation-12">
           <v-toolbar card prominent>
-            <v-toolbar-title class="body-2 black--text"><h2>Nerdy</h2></v-toolbar-title>
+            <v-toolbar-title class="body-2">
+              <router-link to="/" class="black--text"><h2>Nerdy</h2></router-link>
+            </v-toolbar-title>
             <v-spacer></v-spacer>
 
              <app-notification v-if="loggedIn"></app-notification>
